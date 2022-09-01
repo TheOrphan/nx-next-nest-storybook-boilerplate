@@ -14,7 +14,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@boilerplate-project/public-nest-lib": [
+        "packages/public-nest-lib/src/index.ts"
+      ],
+      "@boilerplate-project/public-next-lib": [
+        "packages/public-next-lib/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
