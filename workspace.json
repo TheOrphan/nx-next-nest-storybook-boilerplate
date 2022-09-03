@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "be-auth": "packages/be-auth",
+    "api-gateway": "packages/api-gateway",
     "dashboard": "packages/dashboard",
     "dashboard-e2e": "packages/dashboard-e2e",
     "public-nest-lib": "packages/public-nest-lib",
