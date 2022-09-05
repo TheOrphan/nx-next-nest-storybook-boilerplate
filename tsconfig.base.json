@@ -15,12 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@boilerplate-project/public-nest-lib": [
-        "packages/public-nest-lib/src/index.ts"
-      ],
-      "@boilerplate-project/public-next-lib": [
-        "packages/public-next-lib/src/index.ts"
-      ]
+      "@boilerplate-project/ui-lib": ["packages/ui-lib/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

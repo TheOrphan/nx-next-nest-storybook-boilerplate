@@ -24,4 +24,13 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+  async permission(userId: number, page: string, list: boolean): Promise<any> {
+    const isAuthorized = await this.usersService.collectPermission(
+      userId,
+      page,
+      list
+    );
+    return isAuthorized;
+  }
 }

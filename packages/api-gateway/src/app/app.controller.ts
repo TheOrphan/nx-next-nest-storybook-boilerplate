@@ -1,4 +1,11 @@
-import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Request,
+  Post,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { AuthService } from '../auth/auth.service';
@@ -14,8 +21,18 @@ export class AppController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Get('auth/check')
+  authCheck() {
+    return true;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('auth/permission')
+  getPermission(@Query() params, @Request() req) {
+    return this.authService.permission(
+      req.user.userId,
+      params.page,
+      params.list === 'true'
+    );
   }
 }

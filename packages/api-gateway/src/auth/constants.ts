@@ -10,5 +10,3 @@ export const jwtConstants = {
 // HfMhPkSpUrTheOrphanZw3z6B8DbGdJf
 // TrWtYTheOrphany5A7DaFcHfMhPmSpUr
 // mTqVsXv2x4z7C9EbHeKTheOrphankRnT
-// PmSpUrXuZw3z6TheOrphanDbGdJgNjQm
-// NkRnTrWtTheOrphan3y5A7DaFcJfMhPm

@@ -1,12 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "baseUrl": ".",
-    "skipLibCheck": true,
-    "module": "esnext",
-    "moduleResolution": "node",
     "jsx": "preserve",
     "jsxImportSource": "@emotion/react",
     "allowJs": true,
