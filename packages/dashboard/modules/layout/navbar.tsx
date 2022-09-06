@@ -30,9 +30,13 @@ const mockdata = [
     label: 'Releases',
     icon: IconCalendarStats,
     links: [
-      { label: 'Upcoming releases', key: 'release-upcoming', link: '/' },
-      { label: 'Previous releases', key: 'release-previous', link: '/' },
-      { label: 'Releases schedule', key: 'release-schedule', link: '/' },
+      {
+        label: 'Upcoming releases',
+        key: 'releases-upcoming',
+        link: '/releases/upcoming',
+      },
+      { label: 'Previous releases', key: 'releases-previous', link: '/' },
+      { label: 'Releases schedule', key: 'releases-schedule', link: '/' },
     ],
   },
   {
@@ -103,21 +107,24 @@ export function NavbarNested() {
   const [links, setLinks] = useState(null);
   useEffect(() => {
     if (modules?.length > 0) {
-      let menus = [];
-      mockdata.map((menu) => {
-        if (menu.links) {
-          const submenus = menu.links.filter((submenu) =>
-            modules.includes(submenu.key)
-          );
-          if (submenus.length > 0) {
-            menu.links = submenus;
+      const modulesSlugs = modules?.map((e) => e.slug) || [];
+      if (modulesSlugs.length > 0) {
+        let menus = [];
+        mockdata.map((menu) => {
+          if (menu.links) {
+            const submenus = menu.links.filter((submenu) =>
+              modulesSlugs.includes(submenu.key)
+            );
+            if (submenus.length > 0) {
+              menu.links = submenus;
+              menus.push(menu);
+            }
+          } else if (modulesSlugs.includes(menu.key)) {
             menus.push(menu);
           }
-        } else if (modules.includes(menu.key)) {
-          menus.push(menu);
-        }
-      });
-      setListMenu(menus);
+        });
+        setListMenu(menus);
+      }
     }
   }, [modules]);
   useEffect(() => {

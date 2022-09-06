@@ -1,4 +1,4 @@
-import Error from 'next/error';
+import { Unauthorized } from '@boilerplate-project/ui-lib';
 
 export async function getServerSideProps() {
   return {
@@ -6,6 +6,6 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Page({ errorCode, title }) {
-  return <Error statusCode={errorCode} title={title} />;
+export default function Page() {
+  return <Unauthorized />;
 }

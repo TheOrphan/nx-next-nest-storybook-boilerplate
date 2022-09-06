@@ -34,14 +34,17 @@ export class UsersService {
       modules: [
         {
           name: 'dashboard',
+          slug: 'dashboard',
           access: { add: 1, delete: 1, edit: 1, view: 1 },
         },
         {
           name: 'profile',
+          slug: 'profile',
           access: { add: 1, delete: 1, edit: 1, view: 0 },
         },
         {
           name: 'report',
+          slug: 'report',
           access: { add: 1, delete: 1, edit: 1, view: 1 },
         },
       ],
@@ -52,14 +55,17 @@ export class UsersService {
       modules: [
         {
           name: 'dashboard',
+          slug: 'dashboard',
           access: { add: 0, delete: 0, edit: 0, view: 0 },
         },
         {
           name: 'profile',
+          slug: 'profile',
           access: { add: 0, delete: 0, edit: 0, view: 0 },
         },
         {
           name: 'report',
+          slug: 'report',
           access: { add: 0, delete: 0, edit: 0, view: 0 },
         },
       ],
@@ -70,14 +76,27 @@ export class UsersService {
       modules: [
         {
           name: 'dashboard',
+          slug: 'dashboard',
           access: { add: 1, delete: 1, edit: 1, view: 1 },
         },
         {
           name: 'profile',
+          slug: 'profile',
           access: { add: 1, delete: 1, edit: 1, view: 0 },
         },
         {
-          name: 'release-upcoming',
+          name: 'releases/upcoming',
+          slug: 'releases-upcoming',
+          access: { add: 1, delete: 1, edit: 1, view: 1 },
+        },
+        {
+          name: 'releases/schedule',
+          slug: 'releases-schedule',
+          access: { add: 1, delete: 1, edit: 1, view: 1 },
+        },
+        {
+          name: 'analytics',
+          slug: 'analytics',
           access: { add: 1, delete: 1, edit: 1, view: 1 },
         },
       ],
@@ -92,18 +111,18 @@ export class UsersService {
     page: string,
     list: boolean
   ): Promise<User | undefined> {
-    let modules: Array<string>;
+    let modules: { name: string; slug: string }[];
     const userData = this.permissions.find(
       (permission) => permission.userId === userId
     );
     if (list) {
       modules = userData.modules
         .filter((each) => each.access.view)
-        .map((each) => each.name);
+        .map((each) => ({ name: each.name, slug: each.slug }));
     }
     const isAllowed: UserModules = userData.modules.filter(
       (access) => access.name === page
     )[0];
-    return list ? modules : isAllowed?.access;
+    return list ? { modules, access: isAllowed?.access } : isAllowed?.access;
   }
 }

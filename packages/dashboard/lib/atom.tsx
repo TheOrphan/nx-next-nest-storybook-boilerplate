@@ -1,9 +1,7 @@
-import { atom, selector } from "recoil";
-import { v4 as uuidv4 } from "uuid";
+import { atom, selector } from 'recoil';
+import { v4 as uuidv4 } from 'uuid';
 
-// export const dateRangeSelected = atom({
-//     key: `dateRangeSelected/${uuidv4()}`,
-//     default: {
-//       value: [],
-//     },
-//   });
+// export const formState = atom({
+//   key: `formState/${uuidv4()}`,
+//   default: 'view',
+// });

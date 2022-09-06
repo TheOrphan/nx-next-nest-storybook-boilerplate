@@ -13,7 +13,7 @@ export const checkAccess = async ({ page, token }) => {
     `http://localhost:3333/api/auth/check`,
     options
   );
-  const status = resAuthCheck.status !== 304 && false;
+  const session = resAuthCheck.status !== 200 ? false : true;
   const authCheck = await resAuthCheck.json();
 
   page = page.substring(1);
@@ -23,11 +23,11 @@ export const checkAccess = async ({ page, token }) => {
   );
   const permission = await resPermission.json();
 
-  return { status, authCheck, permission };
+  return { session, authCheck, permission };
 };
 
 export const getModules = (includeLists: boolean = true) => {
-  const [response, setResponse] = useState({ data: [] });
+  const [response, setResponse] = useState({ data: { modules: [] } });
   const [modules, setModules] = useState(null);
   useEffect(() => {
     fetch(`/api/auth/permission`, {
@@ -42,7 +42,7 @@ export const getModules = (includeLists: boolean = true) => {
 
   useEffect(() => {
     if (response) {
-      setModules(response.data);
+      setModules(response.data.modules);
     }
   }, [response]);
   return modules;

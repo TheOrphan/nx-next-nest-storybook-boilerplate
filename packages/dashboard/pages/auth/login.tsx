@@ -2,18 +2,17 @@ import { getCookie } from 'cookies-next';
 import { checkAccess } from 'packages/dashboard/lib/useAccess';
 import Module from '../../modules/auth/login';
 
-function Page({ status, authCheck, permission }) {
+function Page() {
   return <Module />;
 }
 
 export async function getServerSideProps({ req, res, resolvedUrl }) {
   const token = getCookie('_o', { req, res });
-  const { status, authCheck, permission } = await checkAccess({
+  const { session, authCheck } = await checkAccess({
     token,
     page: resolvedUrl,
   });
-
-  if (authCheck) {
+  if (session && authCheck) {
     return {
       redirect: {
         destination: '/dashboard',
