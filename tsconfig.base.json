@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@boilerplate-project/ui-lib": ["packages/ui-lib/src/index.ts"]
+      "@boilerplate-project/ui-lib": ["packages/ui-lib/src/index.ts"],
+      "@boilerplate-project/util-lib": ["packages/util-lib/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

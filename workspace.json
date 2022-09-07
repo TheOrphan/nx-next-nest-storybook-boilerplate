@@ -5,6 +5,7 @@
     "api-gateway": "packages/api-gateway",
     "dashboard": "packages/dashboard",
     "dashboard-e2e": "packages/dashboard-e2e",
-    "ui-lib": "packages/ui-lib"
+    "ui-lib": "packages/ui-lib",
+    "util-lib": "packages/util-lib"
   }
 }
