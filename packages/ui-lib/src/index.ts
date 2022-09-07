@@ -1,3 +1,4 @@
+export * from './lib/error-page/error-page';
 export * from './lib/unauthorized/unauthorized';
 export * from './lib/server-error/server-error';
 export * from './lib/server-busy/server-busy';

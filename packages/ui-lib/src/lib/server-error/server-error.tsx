@@ -6,10 +6,12 @@ import {
   Container,
   Group,
 } from '@mantine/core';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
   root: {
-    paddingTop: 80,
+    paddingTop: '10%',
+    height: '100vh',
     paddingBottom: 120,
     backgroundColor: theme.fn.variant({
       variant: 'filled',
@@ -52,6 +54,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function ServerError() {
+  const router = useRouter();
   const { classes } = useStyles();
 
   return (
@@ -64,7 +67,7 @@ export function ServerError() {
           development team was already notified. Try refreshing the page.
         </Text>
         <Group position="center">
-          <Button variant="white" size="md">
+          <Button variant="white" size="md" onClick={() => router.reload()}>
             Refresh the page
           </Button>
         </Group>

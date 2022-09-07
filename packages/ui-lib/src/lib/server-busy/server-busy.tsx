@@ -7,10 +7,12 @@ import {
   Group,
 } from '@mantine/core';
 import { Illustration } from './Illustration';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
   root: {
-    paddingTop: 120,
+    height: '100vh',
+    paddingTop: '10%',
     paddingBottom: 120,
     backgroundColor: theme.fn.variant({
       variant: 'filled',
@@ -63,6 +65,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function ServerBusy() {
+  const router = useRouter();
   const { classes } = useStyles();
 
   return (
@@ -78,7 +81,7 @@ export function ServerBusy() {
               this issue.
             </Text>
             <Group position="center">
-              <Button size="md" variant="white">
+              <Button size="md" variant="white" onClick={() => router.reload()}>
                 Refresh the page
               </Button>
             </Group>

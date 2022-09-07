@@ -5,7 +5,8 @@ import { RecoilRoot } from 'recoil';
 import { useRouter } from 'next/router';
 import { NavbarNested } from 'packages/dashboard/modules/layout/navbar';
 
-export default function App({ Component, pageProps }: AppProps) {
+export function MyApp({ Component, pageProps }: AppProps) {
+  const { statusCode: isPageError } = pageProps;
   const router = useRouter();
   return (
     <RecoilRoot>
@@ -14,7 +15,8 @@ export default function App({ Component, pageProps }: AppProps) {
         withNormalizeCSS
         theme={{ colorScheme: 'dark' }}
       >
-        {!['/auth', '/error'].some((v) => router.pathname.includes(v)) ? (
+        {!isPageError &&
+        !['/auth', '/error'].some((v) => router.pathname.includes(v)) ? (
           <AppShell
             padding="md"
             navbar={
@@ -40,3 +42,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </RecoilRoot>
   );
 }
+
+export default MyApp;

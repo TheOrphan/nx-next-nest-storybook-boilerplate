@@ -12,7 +12,7 @@ import image from './image.svg';
 
 const useStyles = createStyles((theme) => ({
   root: {
-    marginTop: '20%',
+    marginTop: '10%',
     paddingTop: 80,
     paddingBottom: 80,
     color: '#f03d5f',
