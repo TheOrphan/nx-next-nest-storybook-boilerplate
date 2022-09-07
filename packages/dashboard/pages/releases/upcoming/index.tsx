@@ -1,4 +1,8 @@
-import { TableSearchSort } from '@boilerplate-project/ui-lib';
+import {
+  TableFormStateTypes,
+  TableSearchSort,
+  useFormTableState,
+} from '@boilerplate-project/ui-lib';
 import { Grid, Paper, Title, TextInput, Group, Button } from '@mantine/core';
 import { getCookie } from 'cookies-next';
 import { checkAccess } from 'packages/dashboard/lib/useAccess';
@@ -87,12 +91,16 @@ const data = [
   },
 ];
 function Page({ access, title }) {
+  const [myFormState, setFormState] = useFormTableState();
   const form = useForm({
     initialValues: {
       name: '',
     },
   });
-  const handleAdd = (values) => console.log(values);
+  const handleAdd = (values) => {
+    setFormState(TableFormStateTypes.View);
+    console.log(values);
+  };
   return (
     <>
       <Grid justify="space-between" align="flex-start">
@@ -104,6 +112,7 @@ function Page({ access, title }) {
         <TableSearchSort
           data={data}
           access={access}
+          formState={myFormState}
           FormAdd={
             <form
               onSubmit={form.onSubmit((values) => {

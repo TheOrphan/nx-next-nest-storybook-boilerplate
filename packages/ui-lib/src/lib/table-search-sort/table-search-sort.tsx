@@ -1,120 +1,10 @@
-import { useState } from 'react';
-import {
-  createStyles,
-  Table,
-  ScrollArea,
-  UnstyledButton,
-  Group,
-  Text,
-  Center,
-  TextInput,
-  Button,
-} from '@mantine/core';
-import { keys } from '@mantine/utils';
-import {
-  IconSelector,
-  IconChevronDown,
-  IconChevronUp,
-  IconSearch,
-  IconPlus,
-} from '@tabler/icons';
-import { useRecoilValue } from 'recoil';
-
-const useStyles = createStyles((theme) => ({
-  th: {
-    padding: '0 !important',
-  },
-
-  control: {
-    width: '100%',
-    padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
-
-    '&:hover': {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors['dark'][6]
-          : theme.colors['gray'][0],
-    },
-  },
-
-  icon: {
-    width: 21,
-    height: 21,
-    borderRadius: 21,
-  },
-}));
-
-interface TableSortProps {
-  data: Array<any>;
-  access: { add: boolean; remove: boolean; edit: boolean };
-  forceNoAdd?: boolean;
-  FormAdd?: React.ReactNode | null;
-  FormEdit?: React.ReactNode | null;
-}
-
-interface ThProps {
-  children: React.ReactNode;
-  reversed: boolean;
-  sorted: boolean;
-  style: React.CSSProperties;
-  onSort(): void;
-}
-
-function Th({ children, reversed, sorted, onSort, style }: ThProps) {
-  const { classes } = useStyles();
-  const Icon = sorted
-    ? reversed
-      ? IconChevronUp
-      : IconChevronDown
-    : IconSelector;
-  return (
-    <th className={classes.th}>
-      <UnstyledButton
-        onClick={onSort}
-        className={classes.control}
-        style={style}
-      >
-        <Group position="apart">
-          <Text weight={500} size="sm">
-            {children}
-          </Text>
-          <Center className={classes.icon}>
-            <Icon size={14} stroke={1.5} />
-          </Center>
-        </Group>
-      </UnstyledButton>
-    </th>
-  );
-}
-
-function filterData(data: any[], search: string) {
-  const query = search.toLowerCase().trim();
-  return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
-  );
-}
-
-function sortData(
-  data: any,
-  payload: { sortBy: keyof any | null; reversed: boolean; search: string }
-) {
-  const { sortBy } = payload;
-
-  if (!sortBy) {
-    return filterData(data, payload.search);
-  }
-
-  return filterData(
-    [...data].sort((a, b) => {
-      if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy]);
-      }
-
-      return a[sortBy].localeCompare(b[sortBy]);
-    }),
-    payload.search
-  );
-}
+import { useEffect, useState } from 'react';
+import { Table, ScrollArea, Text, TextInput, Button } from '@mantine/core';
+import { IconSearch, IconPlus } from '@tabler/icons';
+import { TableFormStateTypes, TableSortProps } from './table-search-sort-types';
+import { sortData } from './table-search-sort-helper';
+import { TableHeader } from './_components';
+import { useFormTableState } from './table-search-sort-hook';
 
 export function TableSearchSort({
   data,
@@ -124,17 +14,19 @@ export function TableSearchSort({
   FormEdit = null,
 }: TableSortProps) {
   const [search, setSearch] = useState('');
-  const [formState, setFormState] = useState('view');
   const [btnAddPress, setBtnAddPress] = useState(false);
   const [sortedData, setSortedData] = useState(data || []);
   const firstRow = data[0];
   const [sortBy, setSortBy] = useState<keyof any | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [formState, setFormState] = useFormTableState();
 
   const action = () => (
     <>
       {access.edit && (
-        <Button onClick={() => setFormState('edit')}>Edit</Button>
+        <Button onClick={() => setFormState(TableFormStateTypes.Edit)}>
+          Edit
+        </Button>
       )}
       {access.remove && <Button ml="xs">Delete</Button>}
     </>
@@ -169,9 +61,9 @@ export function TableSearchSort({
       </tr>
     ));
 
-  return formState === 'add' ? (
+  return formState === TableFormStateTypes.Add ? (
     <ScrollArea>{FormAdd}</ScrollArea>
-  ) : formState === 'edit' ? (
+  ) : formState === TableFormStateTypes.Edit ? (
     <ScrollArea>{FormEdit}</ScrollArea>
   ) : (
     <ScrollArea>
@@ -189,7 +81,7 @@ export function TableSearchSort({
           onClick={() => {
             setBtnAddPress(true);
             setTimeout(() => {
-              setFormState('add');
+              setFormState(TableFormStateTypes.Add);
               setBtnAddPress(false);
             }, 1000);
           }}
@@ -208,7 +100,7 @@ export function TableSearchSort({
         <thead>
           <tr>
             {Object.entries(firstRow).map(([k, v]) => (
-              <Th
+              <TableHeader
                 key={k + v}
                 sorted={sortBy === k}
                 reversed={reverseSortDirection}
@@ -216,7 +108,7 @@ export function TableSearchSort({
                 style={{ textTransform: 'capitalize' }}
               >
                 {k}
-              </Th>
+              </TableHeader>
             ))}
           </tr>
         </thead>
@@ -237,3 +129,6 @@ export function TableSearchSort({
     </ScrollArea>
   );
 }
+
+export * from './table-search-sort-types';
+export * from './table-search-sort-hook';
