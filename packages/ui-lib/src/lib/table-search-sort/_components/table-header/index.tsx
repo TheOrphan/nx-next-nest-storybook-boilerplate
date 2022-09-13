@@ -3,7 +3,15 @@ import { IconChevronUp, IconChevronDown, IconSelector } from '@tabler/icons';
 import { useStyles } from '../../table-search-sort-style';
 import { ThProps } from '../../table-search-sort-types';
 
-function TableHeader({ children, reversed, sorted, onSort, style }: ThProps) {
+function TableHeader({
+  children,
+  reversed,
+  sorted,
+  onSort,
+  sortActive = true,
+  ThColStyle,
+  style,
+}: ThProps) {
   const { classes } = useStyles();
   const Icon = sorted
     ? reversed
@@ -11,9 +19,9 @@ function TableHeader({ children, reversed, sorted, onSort, style }: ThProps) {
       : IconChevronDown
     : IconSelector;
   return (
-    <th className={classes.th}>
+    <th className={classes.th} style={ThColStyle}>
       <UnstyledButton
-        onClick={onSort}
+        onClick={() => sortActive && onSort()}
         className={classes.control}
         style={style}
       >
@@ -21,9 +29,11 @@ function TableHeader({ children, reversed, sorted, onSort, style }: ThProps) {
           <Text weight={500} size="sm">
             {children}
           </Text>
-          <Center className={classes.icon}>
-            <Icon size={14} stroke={1.5} />
-          </Center>
+          {sortActive && (
+            <Center className={classes.icon}>
+              <Icon size={14} stroke={1.5} />
+            </Center>
+          )}
         </Group>
       </UnstyledButton>
     </th>

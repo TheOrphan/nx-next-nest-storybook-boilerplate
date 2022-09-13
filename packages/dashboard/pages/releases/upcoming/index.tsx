@@ -1,7 +1,7 @@
 import {
   TableFormStateTypes,
   TableSearchSort,
-  useFormTableState,
+  // useFormTableState,
 } from '@boilerplate-project/ui-lib';
 import { Grid, Paper, Title, TextInput, Group, Button } from '@mantine/core';
 import { getCookie } from 'cookies-next';
@@ -91,16 +91,16 @@ const data = [
   },
 ];
 function Page({ access, title }) {
-  const [myFormState, setFormState] = useFormTableState();
-  const form = useForm({
-    initialValues: {
-      name: '',
-    },
-  });
-  const handleAdd = (values) => {
-    setFormState(TableFormStateTypes.View);
-    console.log(values);
-  };
+  // const { setFormState } = useFormTableState();
+  // const form = useForm({
+  //   initialValues: {
+  //     name: '',
+  //   },
+  // });
+  // const handleAdd = (values) => {
+  //   // setFormState(TableFormStateTypes.View);
+  //   console.log(values);
+  // };
   return (
     <>
       <Grid justify="space-between" align="flex-start">
@@ -112,25 +112,43 @@ function Page({ access, title }) {
         <TableSearchSort
           data={data}
           access={access}
-          formState={myFormState}
-          FormAdd={
-            <form
-              onSubmit={form.onSubmit((values) => {
-                handleAdd(values);
-              })}
-            >
-              <TextInput
-                placeholder="Your name"
-                label="Full name"
-                withAsterisk
-                {...form.getInputProps('name')}
-              />
-              <Group position="right" mt="md">
-                <Button type="submit">Submit</Button>
-              </Group>
-            </form>
-          }
-          // FormEdit={}
+          uniqueKey="email"
+          FormAddURI="/releases/upcoming/add"
+          FormEditURI="/releases/upcoming/edit"
+          // FormAdd={
+          //   <form
+          //     onSubmit={form.onSubmit((values) => {
+          //       handleAdd(values);
+          //     })}
+          //   >
+          //     <TextInput
+          //       placeholder="Your name"
+          //       label="Full name"
+          //       withAsterisk
+          //       {...form.getInputProps('name')}
+          //     />
+          //     <Group position="right" mt="md">
+          //       <Button type="submit">Submit</Button>
+          //     </Group>
+          //   </form>
+          // }
+          // FormEdit={
+          //   <form
+          //     onSubmit={form.onSubmit((values) => {
+          //       handleAdd(values);
+          //     })}
+          //   >
+          //     <TextInput
+          //       placeholder="Your name"
+          //       label="Full name"
+          //       withAsterisk
+          //       {...form.getInputProps('name')}
+          //     />
+          //     <Group position="right" mt="md">
+          //       <Button type="submit">Submit</Button>
+          //     </Group>
+          //   </form>
+          // }
         />
       </Paper>
     </>

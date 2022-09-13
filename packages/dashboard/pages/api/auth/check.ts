@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getCookie } from 'cookies-next';
-import { parseToken } from 'packages/dashboard/lib/parse-token';
+import { parseToken } from '@boilerplate-project/util-lib';
 
 type Data = {
   status: boolean;

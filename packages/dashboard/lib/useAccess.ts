@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { parseToken } from './parse-token';
+import { parseToken } from '@boilerplate-project/util-lib';
 
 export const checkAccess = async ({ page, token }) => {
   const options = {

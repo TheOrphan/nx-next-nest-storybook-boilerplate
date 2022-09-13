@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Table, ScrollArea, Text, TextInput, Button } from '@mantine/core';
-import { IconSearch, IconPlus } from '@tabler/icons';
+import {
+  Table,
+  ScrollArea,
+  Text,
+  TextInput,
+  Button,
+  Group,
+} from '@mantine/core';
+import { IconSearch, IconPlus, IconEdit, IconTrash } from '@tabler/icons';
 import { TableFormStateTypes, TableSortProps } from './table-search-sort-types';
 import { sortData } from './table-search-sort-helper';
 import { TableHeader } from './_components';
-import { useFormTableState } from './table-search-sort-hook';
+// import { useFormTableState } from './table-search-sort-hook';
+import { v4 as uuidv4 } from 'uuid';
+import Link from 'next/link';
+import { encrypt } from '@boilerplate-project/util-lib';
 
 export function TableSearchSort({
   data,
@@ -12,60 +22,124 @@ export function TableSearchSort({
   forceNoAdd = false,
   FormAdd = null,
   FormEdit = null,
+  FormAddURI = '',
+  FormEditURI = '',
+  uniqueKey = 'id',
 }: TableSortProps) {
   const [search, setSearch] = useState('');
-  const [btnAddPress, setBtnAddPress] = useState(false);
-  const [sortedData, setSortedData] = useState(data || []);
-  const firstRow = data[0];
+  // const [btnAddPress, setBtnAddPress] = useState(false);
+  // const [btnEditPress, setBtnEditPress] = useState(false);
+  const [initialData, setInitialData] = useState<any[]>([]);
+  const [sortedData, setSortedData] = useState<any[]>([]);
+  const [firstRow, setFirstRow] = useState<any[]>([]);
   const [sortBy, setSortBy] = useState<keyof any | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const [formState, setFormState] = useFormTableState();
+  // const { formState, setFormState } = useFormTableState();
+  const action = (row: any) => {
+    return (
+      (access.edit || access.remove) && (
+        <Group position="apart">
+          {access.edit && (
+            <Link href={`${FormEditURI}/${encrypt(row[uniqueKey])}`}>
+              <Button key={`edit${row?.id}`} leftIcon={<IconEdit size={14} />}>
+                Edit
+              </Button>
+            </Link>
+          )}
+          {access.remove && (
+            <Link href="">
+              <Button
+                key={`remove${row?.id}`}
+                leftIcon={<IconTrash size={14} />}
+              >
+                Delete
+              </Button>
+            </Link>
+          )}
+        </Group>
+      )
+    );
+  };
+  // const action = (row: any) => {
+  //   return (
+  //     (access.edit || access.remove) && (
+  //       <Group position="apart">
+  //         {access.edit && (
+  //           <Button
+  //             key={`edit${row?.id}`}
+  //             onClick={() => {
+  //               setBtnEditPress(true);
+  //               setTimeout(() => {
+  //                 setFormState(TableFormStateTypes.Edit);
+  //                 setBtnEditPress(false);
+  //               });
+  //             }}
+  //             leftIcon={<IconEdit size={14} />}
+  //             loading={btnEditPress}
+  //             loaderPosition="left"
+  //           >
+  //             Edit
+  //           </Button>
+  //         )}
+  //         {access.remove && (
+  //           <Button key={`remove${row?.id}`} leftIcon={<IconTrash size={14} />}>
+  //             Delete
+  //           </Button>
+  //         )}
+  //       </Group>
+  //     )
+  //   );
+  // };
 
-  const action = () => (
-    <>
-      {access.edit && (
-        <Button onClick={() => setFormState(TableFormStateTypes.Edit)}>
-          Edit
-        </Button>
-      )}
-      {access.remove && <Button ml="xs">Delete</Button>}
-    </>
-  );
+  useEffect(() => {
+    if (data) {
+      const formatData = data.map((each) => ({
+        ...each,
+        Action: action({ ...each, id: each.id || uuidv4() }),
+      }));
+      setInitialData(formatData);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (initialData) setFirstRow(initialData[0]);
+    if (initialData) setSortedData(initialData);
+  }, [initialData]);
 
   const setSorting = (field: keyof any) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-    setSortedData(sortData(data, { sortBy: field, reversed, search }));
+    setSortedData(sortData(initialData, { sortBy: field, reversed, search }));
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
     setSortedData(
-      sortData(data, { sortBy, reversed: reverseSortDirection, search: value })
+      sortData(initialData, {
+        sortBy,
+        reversed: reverseSortDirection,
+        search: value,
+      })
     );
   };
 
   const rows =
     sortedData.length > 0 &&
     sortedData.map((row, index) => (
-      <tr key={row.name}>
+      <tr key={row[Object.keys(row)[0]] + `${index}`}>
         {Object.entries(row).map(([key, value]: any[]) => {
-          if (typeof value === 'string') {
-            return <td key={key + index}>{value}</td>;
-          } else {
-            return <td key={key + index}>{value()}</td>;
-          }
+          return <td key={key + index}>{value}</td>;
         })}
       </tr>
     ));
-
-  return formState === TableFormStateTypes.Add ? (
-    <ScrollArea>{FormAdd}</ScrollArea>
-  ) : formState === TableFormStateTypes.Edit ? (
-    <ScrollArea>{FormEdit}</ScrollArea>
-  ) : (
+  // return formState === TableFormStateTypes.Add ? (
+  //   <ScrollArea>{FormAdd}</ScrollArea>
+  // ) : formState === TableFormStateTypes.Edit ? (
+  //   <ScrollArea>{FormEdit}</ScrollArea>
+  // ) : (
+  return (
     <ScrollArea>
       <TextInput
         placeholder="Search by any field"
@@ -75,22 +149,24 @@ export function TableSearchSort({
         onChange={handleSearchChange}
       />
       {access.add && !forceNoAdd && (
-        <Button
-          style={{ float: 'right' }}
-          leftIcon={<IconPlus size={14} />}
-          onClick={() => {
-            setBtnAddPress(true);
-            setTimeout(() => {
-              setFormState(TableFormStateTypes.Add);
-              setBtnAddPress(false);
-            }, 1000);
-          }}
-          loading={btnAddPress}
-          loaderPosition="right"
-          mb={'md'}
-        >
-          Add
-        </Button>
+        <Link href={FormAddURI}>
+          <Button
+            style={{ float: 'right' }}
+            leftIcon={<IconPlus size={14} />}
+            // onClick={() => {
+            //   setBtnAddPress(true);
+            //   setTimeout(() => {
+            //     setFormState(TableFormStateTypes.Add);
+            //     setBtnAddPress(false);
+            //   }, 200);
+            // }}
+            // loading={btnAddPress}
+            // loaderPosition="right"
+            mb={'md'}
+          >
+            Add
+          </Button>
+        </Link>
       )}
       <Table
         horizontalSpacing="md"
@@ -99,17 +175,31 @@ export function TableSearchSort({
       >
         <thead>
           <tr>
-            {Object.entries(firstRow).map(([k, v]) => (
-              <TableHeader
-                key={k + v}
-                sorted={sortBy === k}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting(k)}
-                style={{ textTransform: 'capitalize' }}
-              >
-                {k}
-              </TableHeader>
-            ))}
+            {firstRow &&
+              Object.entries(firstRow).map(([k, v]) => {
+                const actionChild = v?.props?.children;
+                const actionsLen =
+                  Array.isArray(actionChild) && !actionChild.includes(undefined)
+                    ? actionChild?.length
+                    : 1;
+                return (
+                  <TableHeader
+                    key={k + v}
+                    sorted={sortBy === k}
+                    reversed={reverseSortDirection}
+                    sortActive={['string', 'integer'].includes(typeof v)}
+                    onSort={() => setSorting(k)}
+                    ThColStyle={{
+                      width: k === 'Action' ? actionsLen * 115 : 'inherit',
+                    }}
+                    style={{
+                      textTransform: 'capitalize',
+                    }}
+                  >
+                    {k}
+                  </TableHeader>
+                );
+              })}
           </tr>
         </thead>
         <tbody>
@@ -131,4 +221,4 @@ export function TableSearchSort({
 }
 
 export * from './table-search-sort-types';
-export * from './table-search-sort-hook';
+// export * from './table-search-sort-hook';

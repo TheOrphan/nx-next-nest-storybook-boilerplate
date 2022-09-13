@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import * as ms from 'ms';
+import ms from 'ms';
 import { setCookie } from 'cookies-next';
-import { encrypt } from 'packages/dashboard/lib/crypto';
+import { encrypt } from '@boilerplate-project/util-lib';
 
 type Data = {
   message: string;
