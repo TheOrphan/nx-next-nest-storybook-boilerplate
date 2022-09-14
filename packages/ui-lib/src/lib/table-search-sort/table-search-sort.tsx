@@ -37,7 +37,7 @@ export function TableSearchSort({
   // const { formState, setFormState } = useFormTableState();
   const action = (row: any) => {
     return (
-      (access.edit || access.remove) && (
+      (access.edit || access.delete) && (
         <Group position="apart">
           {access.edit && (
             <Link href={`${FormEditURI}/${encrypt(row[uniqueKey])}`}>
@@ -46,7 +46,7 @@ export function TableSearchSort({
               </Button>
             </Link>
           )}
-          {access.remove && (
+          {access.delete && (
             <Link href="">
               <Button
                 key={`remove${row?.id}`}
@@ -148,7 +148,7 @@ export function TableSearchSort({
         value={search}
         onChange={handleSearchChange}
       />
-      {access.add && !forceNoAdd && (
+      {access.add && !forceNoAdd ? (
         <Link href={FormAddURI}>
           <Button
             style={{ float: 'right' }}
@@ -167,7 +167,7 @@ export function TableSearchSort({
             Add
           </Button>
         </Link>
-      )}
+      ) : null}
       <Table
         horizontalSpacing="md"
         verticalSpacing="xs"

@@ -6,7 +6,7 @@ export enum TableFormStateTypes {
 
 export interface TableSortProps {
   data: Array<any>;
-  access: { add: boolean; remove: boolean; edit: boolean };
+  access: { add: boolean; delete: boolean; edit: boolean };
   forceNoAdd?: boolean;
   FormAddURI?: string | '';
   FormEditURI?: string | '';

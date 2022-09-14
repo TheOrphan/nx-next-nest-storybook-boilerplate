@@ -1,5 +1,5 @@
 import {
-  TableFormStateTypes,
+  // TableFormStateTypes,
   TableSearchSort,
   // useFormTableState,
 } from '@boilerplate-project/ui-lib';
@@ -162,10 +162,20 @@ export async function getServerSideProps({ req, res, resolvedUrl }) {
     page: resolvedUrl,
   });
   const { access } = permission || {};
-  if (!session || !authCheck || !access?.view) {
+
+  if (!session || !authCheck) {
     return {
       redirect: {
         destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+
+  if (!access?.view) {
+    return {
+      redirect: {
+        destination: '/error/401',
         permanent: false,
       },
     };
