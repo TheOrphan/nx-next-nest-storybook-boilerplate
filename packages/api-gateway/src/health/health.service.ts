@@ -12,13 +12,7 @@ export class HealthService {
   ) {}
 
   getCheckHealth(): Promise<AxiosResponse<any>> {
-    const host = this.configService.get('app.features_service.options.host');
-    const port = this.configService.get('app.features_service.options.port');
-    const prefix = this.configService.get(
-      'app.features_service.options.prefix'
-    );
-    return firstValueFrom(
-      this.httpService.get(`http://${host}:${port}/${prefix}/health`)
-    );
+    const API_FEATURE = this.configService.get('app.features_service');
+    return firstValueFrom(this.httpService.get(`${API_FEATURE}/health`));
   }
 }

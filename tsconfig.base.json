@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@boilerplate-project/nest-util-lib": [
+        "packages/nest-util-lib/src/index.ts"
+      ],
       "@boilerplate-project/ui-lib": ["packages/ui-lib/src/index.ts"],
       "@boilerplate-project/util-lib": ["packages/util-lib/src/index.ts"]
     }

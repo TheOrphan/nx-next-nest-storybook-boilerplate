@@ -1,5 +1,9 @@
 export type AppConfigTypes = {
+  mode: string;
+  name: string;
   port: number;
+  version: string;
+  prefix: string;
 };
 
 export type DatabaseConfigTypes = {

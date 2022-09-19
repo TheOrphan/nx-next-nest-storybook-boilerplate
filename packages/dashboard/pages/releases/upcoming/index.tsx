@@ -3,10 +3,16 @@ import {
   TableSearchSort,
   // useFormTableState,
 } from '@boilerplate-project/ui-lib';
-import { Grid, Paper, Title, TextInput, Group, Button } from '@mantine/core';
+import {
+  Grid,
+  Paper,
+  Title,
+  //TextInput, Group, Button
+} from '@mantine/core';
 import { getCookie } from 'cookies-next';
 import { checkAccess } from 'packages/dashboard/lib/useAccess';
-import { useForm } from '@mantine/form';
+// import { useForm } from '@mantine/form';
+import { getAllData } from 'packages/dashboard/lib/getAllData';
 
 const data = [
   {
@@ -155,14 +161,14 @@ function Page({ access, title }) {
   );
 }
 
-export async function getServerSideProps({ req, res, resolvedUrl }) {
+export async function getServerSideProps({ req, res, resolvedUrl, query }) {
   const token = getCookie('_o', { req, res });
+  const currentPage = resolvedUrl.split('?')[0];
   const { session, authCheck, permission } = await checkAccess({
     token,
-    page: resolvedUrl,
+    page: currentPage,
   });
   const { access } = permission || {};
-
   if (!session || !authCheck) {
     return {
       redirect: {
@@ -171,7 +177,6 @@ export async function getServerSideProps({ req, res, resolvedUrl }) {
       },
     };
   }
-
   if (!access?.view) {
     return {
       redirect: {
@@ -180,7 +185,13 @@ export async function getServerSideProps({ req, res, resolvedUrl }) {
       },
     };
   }
-  return { props: { title: 'Upcoming Releases', access } };
+  const { page } = query || {};
+  const data = await getAllData({
+    endpoint: '/release',
+    page: parseInt(page) || 1,
+    token,
+  });
+  return { props: { title: 'Upcoming Releases', access, data } };
 }
 
 export default Page;

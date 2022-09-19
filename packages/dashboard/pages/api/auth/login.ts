@@ -9,11 +9,14 @@ type Data = {
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const { email, password } = JSON.parse(req.body);
-  const loggingIn = await fetch(`http://localhost:3333/api/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: email, password }),
-  });
+  const loggingIn = await fetch(
+    `${process.env.PUBLIC_API_GATEWAY}/auth/login`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: email, password }),
+    }
+  );
   if (loggingIn.status === 201) {
     const token = await loggingIn.json();
     setCookie('_o', encrypt(token.access_token), {

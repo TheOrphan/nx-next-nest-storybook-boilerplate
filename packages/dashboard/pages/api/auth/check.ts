@@ -8,13 +8,16 @@ type Data = {
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const token = getCookie('_o', { req, res });
-  const authCheck = await fetch(`http://localhost:3333/api/auth/check`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + parseToken(token),
-    },
-  });
+  const authCheck = await fetch(
+    `${process.env.PUBLIC_API_GATEWAY}/auth/check`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + parseToken(token),
+      },
+    }
+  );
   if (authCheck.status === 200) {
     res.status(200).json({ status: true });
   } else {

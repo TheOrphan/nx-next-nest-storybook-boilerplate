@@ -8,7 +8,9 @@ import {
 } from '@nestjs/terminus';
 import { ApiFeaturesHealthIndicator } from './api-feature.health';
 import { HealthService } from './health.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Health')
 @Controller('health')
 export class HealthController {
   constructor(

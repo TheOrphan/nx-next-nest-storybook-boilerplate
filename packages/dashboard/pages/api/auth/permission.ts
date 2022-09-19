@@ -12,7 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   );
   const token = getCookie('_o', { req, res });
   const response = await fetch(
-    `http://localhost:3333/api/auth/permission?page=${page}&list=${includeLists}`,
+    `${process.env.PUBLIC_API_GATEWAY}/auth/permission?page=${page}&list=${includeLists}`,
     {
       method: 'GET',
       headers: {

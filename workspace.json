@@ -6,6 +6,7 @@
     "api-gateway": "packages/api-gateway",
     "dashboard": "packages/dashboard",
     "dashboard-e2e": "packages/dashboard-e2e",
+    "nest-util-lib": "packages/nest-util-lib",
     "ui-lib": "packages/ui-lib",
     "util-lib": "packages/util-lib"
   }

@@ -1,5 +1,8 @@
 export type AppConfigTypes = {
+  mode: string;
+  name: string;
   port: number;
   prefix: string;
-  features_service: any;
+  version: string;
+  features_service: string;
 };

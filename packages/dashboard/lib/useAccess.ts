@@ -10,7 +10,7 @@ export const checkAccess = async ({ page, token }) => {
     },
   };
   const resAuthCheck = await fetch(
-    `http://localhost:3333/api/auth/check`,
+    `${process.env.PUBLIC_API_GATEWAY}/auth/check`,
     options
   );
   const session = resAuthCheck.status !== 200 ? false : true;
@@ -18,11 +18,10 @@ export const checkAccess = async ({ page, token }) => {
 
   page = page.substring(1);
   const resPermission = await fetch(
-    `http://localhost:3333/api/auth/permission?page=${page}&list=true`,
+    `${process.env.PUBLIC_API_GATEWAY}/auth/permission?page=${page}&list=true`,
     options
   );
   const permission = await resPermission.json();
-
   return { session, authCheck, permission };
 };
 

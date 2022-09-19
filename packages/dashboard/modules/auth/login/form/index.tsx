@@ -60,6 +60,7 @@ export function AuthenticationForm({
       if (await login.json()) {
         // redirect dashboard pages
         router.push(`/dashboard`);
+        console.log('Login successful');
       } else {
         setMessage('Authentication failed');
       }

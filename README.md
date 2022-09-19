@@ -92,3 +92,8 @@ Visit [Nx Cloud](https://nx.app/) to learn more.
 # Self Documentation
 
 `nx g @nrwl/react:component --project=ui-lib SocialButton`
+
+generate resource nest
+`nx g @nrwl/nest:resource name --project=package name`
+
+`nx g @nrwl/nest:resource api-feature/release --project=api-gateway`
