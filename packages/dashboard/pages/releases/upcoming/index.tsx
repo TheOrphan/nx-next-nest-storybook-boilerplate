@@ -121,6 +121,8 @@ function Page({ access, title }) {
           uniqueKey="email"
           FormAddURI="/releases/upcoming/add"
           FormEditURI="/releases/upcoming/edit"
+          onDeleteConfirm={() => console.log('is deleted confirm')}
+          onDeleteAbort={() => console.log('is deleted abort')}
           // FormAdd={
           //   <form
           //     onSubmit={form.onSubmit((values) => {

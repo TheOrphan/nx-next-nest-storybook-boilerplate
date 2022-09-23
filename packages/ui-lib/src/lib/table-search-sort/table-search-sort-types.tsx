@@ -14,6 +14,8 @@ export interface TableSortProps {
   FormAdd?: React.ReactNode | null;
   FormEdit?: React.ReactNode | null;
   formState?: TableFormStateTypes;
+  onDeleteConfirm?: () => void;
+  onDeleteAbort?: () => void;
 }
 
 export interface ThProps {

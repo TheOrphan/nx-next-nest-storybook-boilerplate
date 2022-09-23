@@ -15,6 +15,7 @@ import { TableHeader } from './_components';
 import { v4 as uuidv4 } from 'uuid';
 import Link from 'next/link';
 import { encrypt } from '@boilerplate-project/util-lib';
+import ConfirmButton from '../confirm-button/confirm-button';
 
 export function TableSearchSort({
   data,
@@ -25,6 +26,8 @@ export function TableSearchSort({
   FormAddURI = '',
   FormEditURI = '',
   uniqueKey = 'id',
+  onDeleteConfirm = () => {},
+  onDeleteAbort = () => {},
 }: TableSortProps) {
   const [search, setSearch] = useState('');
   // const [btnAddPress, setBtnAddPress] = useState(false);
@@ -47,14 +50,21 @@ export function TableSearchSort({
             </Link>
           )}
           {access.delete && (
-            <Link href="">
-              <Button
-                key={`remove${row?.id}`}
-                leftIcon={<IconTrash size={14} />}
-              >
-                Delete
-              </Button>
-            </Link>
+            <ConfirmButton
+              key={`remove${row?.id}`}
+              buttonProps={{
+                leftIcon: <IconTrash size={14} />,
+              }}
+              popoverProps={{ position: 'top-end' }}
+              dialogProps={{
+                onConfirm: () => {
+                  onDeleteConfirm();
+                },
+                onAbort: () => {
+                  onDeleteAbort();
+                },
+              }}
+            />
           )}
         </Group>
       )
