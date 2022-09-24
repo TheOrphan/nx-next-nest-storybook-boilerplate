@@ -6,8 +6,18 @@ import {
   TextInput,
   Button,
   Group,
+  Alert,
+  Pagination,
 } from '@mantine/core';
-import { IconSearch, IconPlus, IconEdit, IconTrash } from '@tabler/icons';
+import { usePagination } from '@mantine/hooks';
+import {
+  IconSearch,
+  IconPlus,
+  IconEdit,
+  IconTrash,
+  IconAlertCircle,
+} from '@tabler/icons';
+import { useRouter } from 'next/router';
 import { TableFormStateTypes, TableSortProps } from './table-search-sort-types';
 import { sortData } from './table-search-sort-helper';
 import { TableHeader } from './_components';
@@ -23,12 +33,20 @@ export function TableSearchSort({
   forceNoAdd = false,
   FormAdd = null,
   FormEdit = null,
+  withNumber = false,
   FormAddURI = '',
   FormEditURI = '',
   uniqueKey = 'id',
+  dataTotal,
+  dataPerPage = 10,
+  paginationSiblings = 1,
+  paginationBoundaries = 1,
+  showAlert,
   onDeleteConfirm = () => {},
   onDeleteAbort = () => {},
+  onPageChange = () => {},
 }: TableSortProps) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   // const [btnAddPress, setBtnAddPress] = useState(false);
   // const [btnEditPress, setBtnEditPress] = useState(false);
@@ -37,13 +55,25 @@ export function TableSearchSort({
   const [firstRow, setFirstRow] = useState<any[]>([]);
   const [sortBy, setSortBy] = useState<keyof any | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [isAlert, setAlert] = useState({
+    status: false,
+    msg: 'If you have questions, please contact team support.',
+  });
+  const [dataTotalState] = useState(dataTotal || data?.length || 0);
+  const [addURI] = useState(FormAddURI || `${router.pathname}/add`);
+  const [editURI] = useState(FormEditURI || `${router.pathname}/edit`);
+  const pagination = usePagination({
+    total: dataTotalState,
+    siblings: paginationSiblings,
+    boundaries: paginationBoundaries,
+  });
   // const { formState, setFormState } = useFormTableState();
   const action = (row: any) => {
     return (
       (access.edit || access.delete) && (
         <Group position="apart">
           {access.edit && (
-            <Link href={`${FormEditURI}/${encrypt(row[uniqueKey])}`}>
+            <Link href={`${editURI}/${encrypt(row[uniqueKey])}`}>
               <Button key={`edit${row?.id}`} leftIcon={<IconEdit size={14} />}>
                 Edit
               </Button>
@@ -102,11 +132,32 @@ export function TableSearchSort({
   // };
 
   useEffect(() => {
+    if (showAlert) setAlert(showAlert);
+  }, [showAlert]);
+
+  useEffect(() => {
     if (data) {
-      const formatData = data.map((each) => ({
-        ...each,
-        Action: action({ ...each, id: each.id || uuidv4() }),
-      }));
+      if (!data[0][uniqueKey]) {
+        setAlert({
+          status: true,
+          msg: `There is no property of '${uniqueKey.toUpperCase()}' associated to the data, or maybe you were wrong to assign the uniqueKey.`,
+        });
+      }
+      const formatData =
+        data[0][uniqueKey] &&
+        data.map((each, idx) => {
+          if (withNumber) {
+            return {
+              No: (idx + 1) * pagination.active,
+              ...each,
+              Action: action({ ...each, id: each.id || uuidv4() }),
+            };
+          }
+          return {
+            ...each,
+            Action: action({ ...each, id: each.id || uuidv4() }),
+          };
+        });
       setInitialData(formatData);
     }
   }, [data]);
@@ -134,7 +185,6 @@ export function TableSearchSort({
       })
     );
   };
-
   const rows =
     sortedData.length > 0 &&
     sortedData.map((row, index) => (
@@ -151,15 +201,26 @@ export function TableSearchSort({
   // ) : (
   return (
     <ScrollArea>
+      {isAlert.status && (
+        <Alert
+          icon={<IconAlertCircle size={16} />}
+          title="Oops, Something bad has happened!"
+          color="red"
+          my="md"
+        >
+          {isAlert.msg}
+        </Alert>
+      )}
       <TextInput
         placeholder="Search by any field"
         mb="md"
         icon={<IconSearch size={14} stroke={1.5} />}
         value={search}
         onChange={handleSearchChange}
+        disabled={!data[0][uniqueKey]}
       />
       {access.add && !forceNoAdd ? (
-        <Link href={FormAddURI}>
+        <Link href={addURI}>
           <Button
             style={{ float: 'right' }}
             leftIcon={<IconPlus size={14} />}
@@ -173,6 +234,7 @@ export function TableSearchSort({
             // loading={btnAddPress}
             // loaderPosition="right"
             mb={'md'}
+            disabled={!data[0][uniqueKey]}
           >
             Add
           </Button>
@@ -200,7 +262,12 @@ export function TableSearchSort({
                     sortActive={['string', 'integer'].includes(typeof v)}
                     onSort={() => setSorting(k)}
                     ThColStyle={{
-                      width: k === 'Action' ? actionsLen * 115 : 'inherit',
+                      width:
+                        k === 'Action'
+                          ? actionsLen * 115
+                          : k === 'No'
+                          ? 40
+                          : 'inherit',
                     }}
                     style={{
                       textTransform: 'capitalize',
@@ -226,6 +293,23 @@ export function TableSearchSort({
           )}
         </tbody>
       </Table>
+      {!!data[0][uniqueKey] && (
+        <Group position="apart" mt="md" px="md">
+          <Text>
+            Showing {pagination.active} to {dataPerPage} of {dataTotalState}{' '}
+            entries
+          </Text>
+          <Pagination
+            page={pagination.active}
+            total={Math.ceil(dataTotalState / dataPerPage) || 10}
+            onChange={(p) => {
+              onPageChange();
+              pagination.setPage(p);
+            }}
+            withEdges
+          />
+        </Group>
+      )}
     </ScrollArea>
   );
 }

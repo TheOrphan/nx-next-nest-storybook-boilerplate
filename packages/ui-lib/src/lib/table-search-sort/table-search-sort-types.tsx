@@ -11,11 +11,21 @@ export interface TableSortProps {
   FormAddURI?: string | '';
   FormEditURI?: string | '';
   uniqueKey?: string | '';
+  withNumber?: boolean;
+  dataTotal?: number;
+  dataPerPage?: number;
+  paginationSiblings?: number;
+  paginationBoundaries?: number;
+  showAlert?: {
+    status: boolean;
+    msg: string;
+  };
   FormAdd?: React.ReactNode | null;
   FormEdit?: React.ReactNode | null;
   formState?: TableFormStateTypes;
   onDeleteConfirm?: () => void;
   onDeleteAbort?: () => void;
+  onPageChange?: () => void;
 }
 
 export interface ThProps {
